@@ -1,0 +1,392 @@
+---
+title: "Final_Project_Report"
+author: "Elham Rezvani"
+date: "December 15, 2017"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+   The subject of Racial and Ethnic disproportionality in US prisons has been analyzed and studied by many researchers. While a group of publications such as [1] draw attentions to this matter as a great concern and a sign of racial discrimination in US criminal justice system, the other group try to study the involvement rates and relate the racial disproportionality of certain races to higher arrest rates as an indicator of involvement and conclude that the distrust in the criminal justice system should be re-evaluated.
+
+## Motivation
+
+   What we have focued on in this project however, is not the racial or ethnic disproportionality in the number of arrests or inmates, but more-specifically, in what way Racial vs Non-Racial characteristics affect the _type_ and _length of inmate sentences_ given the same offense category and whether or not we can observe a Racial/Ethnic disparity in that aspect. This specific metric, unlike the analysis of the number of prisoners, could be considered as an important indicator of discrimination in the criminal justice system.
+
+## Existing Work
+
+   Existing research on this subject such as [3], analyze the United States Department of Justice Bureau of Justice Statistics Survey of Inmates in State and Federal Correctional Facilities (SISCF) data over a 1-year period, i our study, we have extended the previous research by expanding the time period to cover a broader time-range: from the existing data as early as 1992 to the latest available dataset in 2004. This approach will give us a sense on how the dynamics of criminal justice has been evolving over the past 10 years with respect to length and type of the sentences based on racial/non-racial characteristics of the inmates.
+   
+
+# Research question
+
+   The main focus of this research is to ask whether or not race and ethnicity of inmates play a role in the length and type of the sentence they receive given. 
+
+## Hypothesis
+
+   Based on existing literature, we hypothesize that Non-white races who are convicted for similar offense categories are being convicted to lengthier prison sentences and are given more indeterminate sentences rather than flat sentences when we compare to white inmates if we  control for other variables that may affect sentence length and type of sentence, specifically parole status prior to sentencing, plea agreement status, prior criminal history, education status prior to arrest, employment status prior to arrest, and parental incarceration[3].
+
+## Methods
+
+   We have appled the Binary and Multinomial Logistic Regression to each of our dependent variables: The _type_ and _length_ of the sentence given the year of the study respectively as well as the race and level of education of the inmates as independent variables.
+
+   The binary logistic regression is an appropriate statistical analysis when the independent variables (predictors) are continuous, discrete, or a combination of continuous and discrete.This analysis permits the evaluation of the odds of membership in one of the two outcome groups based on the combination of predictor variable values.  Evaluation of the logistic regression model includes the overall model evaluation and a classification table showing the percentage of correct predictions. The overall model significance for the binary logistic regression will be examined using the x2 omnibus test of model coefficients.
+
+   Binary logistic regression analysis, by design, overcomes many of the restrictive assumptions of linear regressions.  For example, linearity, normality and equal variances are not assumed, nor is it assumed that the error term variance is normally distributed.  The major assumption is that the outcome variable must be dichotomous.  There should be no multicollinearity among the independent variables, there should be no outliers, and there should be a linear relationship between the odds ratio and the independent variable.  Linearity with an ordinal or interval independent variable and the odds ratio can be checked by creating a new variable that divides the existing independent variable into categories of equal intervals and conducting the same regression on these newly categorized versions as categorical variables.  Linearity is shown if the _B_coefficients increase or decrease in linear steps[6].
+   
+   On the otherhand, Multinomial logistic regressions, by design, overcome many of the restrictive assumptions of linear regressions.  For example, linearity, normality and equal variances are not assumed, nor is it assumed that the error term variance is normally distributed.  There should be no multicollinearity among the independent variables, there should be no outliers, and there should be a linear relationship between the odd ratio and the independent variable.  Linearity with an ordinal or interval independent variable and the odd ratio can be checked by creating a new variable that divides the existing independent variable into categories of equal intervals and running the same regression on these newly categorized versions as categorical variables.  Linearity is demonstrated if the B coefficients increase or decrease in linear steps.  Finally, a larger sample is recommended with the maximum likelihood method; using discrete variables requires that there are enough responses in each category[6].
+   
+
+## Data Source
+
+   We will be using a the United States Department of Justice Bureau of Justice Statistics Survey of Inmates in State and Federal Correctional Facilities (SISCF) series of data, which has been gathered through surveys designed by the Bureau of Justice Statistics and conducted by the Bureau of the Census. The surveys gathered extensive information on demographic, socioeconomic, and criminal history characteristics. These surveys provide nationally representative data on inmates held in state prisons and federally-owned and operated prisons. Through personal interviews conducted from 1974, including 1979, 1986, 1991, 1997 through 2004, inmates in both state and federal prisons provided information about their current offense and sentence, criminal history, family background and personal characteristics, prior drug and alcohol use and treatment programs, gun possession and use, and prison activities, programs, and services. These studies have been roughly taken place in 5-year rotations over a 30 year time period.
+
+We will be combining the 7 different data-sets in this series to establish the unified dataset summarizing the 30 years history of the survey results in order to conduct our extended study over the subject.
+
+# Human Centered Considerations
+
+   The focus of this research is to study the behavioral bias when it comes to the degree of punishment which has a strong Human-Centered objective regardless of the results it may entail. The motivation for this work is rooted in un-covering the bias if it exists or help re-establish trust in the Criminal Justice system otherwise.
+
+  In conducting this research, we are heavily relying on Human-Centered approaches from working with data which is gathered respecting the right for privacy for instance [4] and [5] and at the same time protecting the data copy right and licensing information by citing the license information in references section of this report and any future report related to this project.
+
+   Finally, we will be publishing our results as well as all the steps to reproduce and repeat them including code and methods used throughout this research, publically in the format of Jupyter Notebook on github.
+
+# Limitations risks
+
+   Using the SISCF datasets, we are binding our results to the limitations and accuracy of sampling and comprehensiveness of the dataset and any hidden bias that might be inadvertently included while gathering the data which may put the accuracy of the study to a degree of risk.
+
+   Another point to consider, is the sampling of data throughout the window of 30 years and the risk of missing out a lot of inter-polar data which could affect the accuracy of our study when it comes to considering the time when the data was gathered.
+
+ 
+
+# Steps to Analyze the Data
+
+In the following section, we are going to use R to get and clean the data to be used in analysis section.
+
+## Step1: Data Acquiring and Cleaning
+# Data
+
+The data used in this project is retrieved from the 1992,1997 and 2004 Survey of Inmates in State Correctional Facilities (SISCF). These surveys, collectively referred to as the Survey of Inmates in State and Federal Correctional Facilities (SISFCF), provide nationally representative data on inmates held in state prisons and federal prisons for the years 1992,1997 and 2004. Collected through personal interviews  the data captures information about prisoners' current offense and sentence, criminal history, family background, socio-economic characteristics, prior drug and alcohol use and treatment programs, gun possession and use, as well as prison activities, programs, and services.
+
+
+We combine the data from the federal analysis and state analysis datasets for our analysis, which provides information on ~45000 prisoners in the state correctional system and ~ 10,000 prisoners in the federal correctional system. 
+
+```{r echo = FALSE, warning = FALSE, message = FALSE}
+
+#install.packages("memisc") #uncomment if install is needed
+library(memisc)
+
+#### 1) DATA EXTRACTION ####
+
+## Extract .rda files for Federal and State Analysis data from Github #
+
+# This function assigns the loaded data frame the desired name directly
+
+loadRData <- function(fileName){
+  #loads an RData file, and returns it
+  load(fileName)
+  get(ls()[ls() != "fileName"])
+}
+
+# Federal Analysis Data
+url <- "https://github.com/rezvanielham/HumanCenteredDataScience/raw/master/FinalProject/Data/FederalAnalysisR.rda"
+temp = tempfile() #Create temp file
+download.file(url, temp) #download the URL direct to the temp file
+fed.an <- loadRData(temp)
+
+
+# State Analysis Data
+url <- "https://github.com/rezvanielham/HumanCenteredDataScience/raw/master/FinalProject/Data/StateAnalysisR.rda"
+temp = tempfile() #Create temp file
+download.file(url, temp) ##download the URL direct to the temp file
+state.an <- loadRData(temp)
+
+#Creates a dummy for State T/F before combining fed.an and state.an
+state.an$state <- TRUE
+fed.an$state <- FALSE
+
+full.an <- rbind(fed.an,state.an)
+
+# rename first column (id's) and change to character
+names(full.an)[1] <- "ID"
+full.an$ID <- as.character(full.an$ID)
+
+```
+
+Since this data is survey data, it requires further cleaning and recoding to ensure it is appropriate for analysis and to handle missigness (coded in the survey as values from 999997 to 999999). We use the package "memisc", which is designed to handle survey data. 
+
+```{r echo = FALSE, warning = FALSE}
+
+#### 2) DATA CLEANING ####
+
+# replicate dataset in order to check back with orignial dataset if all changes made are true to data
+full.numeric <- full.an
+
+### Generate recidivism variable - running this first to ensure no other recoding interferes with it
+
+full.numeric$CH_CRIMHIST_COLLAPSED <- full.an$CH_CRIMHIST_COLLAPSED # reassign original variable
+
+full.numeric$CH_CRIMHIST_COLLAPSED <- as.character(full.numeric$CH_CRIMHIST_COLLAPSED) #convert to character
+
+full.numeric$CH_CRIMHIST_COLLAPSED <- recode(full.numeric$CH_CRIMHIST_COLLAPSED, #recode
+                                             0 <- "(0000001) First timers",
+                                             1 <- c("(0000002) Recidivist, current or past violent offense", 
+                                                    "(0000003) Recidivist, no current or prior violent offense"),
+                                             otherwise = NA)
+full.numeric$CH_CRIMHIST_COLLAPSED <- as.numeric(as.character(full.numeric$CH_CRIMHIST_COLLAPSED))
+
+
+# create list with factor levels to get idea of categorical values
+levels.list <- vector("list", length = ncol(full.numeric))
+
+for (i in 2:ncol(full.numeric)) {
+  if (is.factor(full.numeric[,i]) == T) {
+    levels.list[[i]] <- levels(full.numeric[,i]) # extract factor levels
+  }
+}
+
+
+## Start with Factors with 3 Levels: Some Form of Yes, No, Missing
+
+# change factor labels for harmonization
+for (i in 2:ncol(full.numeric)) {
+  if (is.factor(full.numeric[,i]) == T & length(levels(full.numeric[,i])) == 3) {
+    
+    # remove punctuation, spaces, and alphabetic expressions
+    levels(full.numeric[,i]) <- gsub("[[:punct:]]", "", levels(full.numeric[,i]))
+    levels(full.numeric[,i]) <- gsub("[[:space:]]", "", levels(full.numeric[,i]))
+    levels(full.numeric[,i]) <- gsub("[[:alpha:]]", "", levels(full.numeric[,i]))
+    # now the factor label should be numeric only
+    
+  }
+}
+
+# convert into character vector and recode
+for (i in 2:ncol(full.numeric)) {
+  if (is.factor(full.numeric[,i]) == T & length(levels(full.numeric[,i])) == 3) {
+    
+    full.numeric[,i] <- as.character(full.numeric[,i])
+    
+    full.numeric[,i] <- recode(full.numeric[,i],
+                               1 <- "0000001",
+                               0 <- c("0000000", "0000002"),
+                               otherwise = NA)
+    
+    full.numeric[,i] <- as.numeric(as.character(full.numeric[,i]))
+    
+  }
+}
+
+
+## Factors with 4 Levels: Some Form of Yes, No, Missing
+for (i in 2:ncol(full.numeric)) {
+  if (is.factor(full.numeric[,i]) == T & length(levels(full.numeric[,i])) == 4) {
+    
+    # remove punctuation, spaces, and alphabetic expressions
+    levels(full.numeric[,i]) <- gsub("[[:punct:]]", "", levels(full.numeric[,i]))
+    levels(full.numeric[,i]) <- gsub("[[:space:]]", "", levels(full.numeric[,i]))
+    levels(full.numeric[,i]) <- gsub("[[:alpha:]]", "", levels(full.numeric[,i]))
+    # now the factor label should be numeric only
+    
+  }
+}
+
+# convert into character vector and recode
+for (i in 2:ncol(full.numeric)) {
+  if (is.factor(full.numeric[,i]) == T & length(levels(full.numeric[,i])) == 4) {
+    
+    full.numeric[,i] <- as.character(full.numeric[,i])
+    
+    full.numeric[,i] <- recode(full.numeric[,i],
+                               1 <- "0000001",
+                               0 <- c("0000002", "0000004"),
+                               otherwise = NA)
+    
+    full.numeric[,i] <- as.numeric(as.character(full.numeric[,i]))
+    
+  }
+}
+
+##Recoding Gender - this is the only two level variable that is not yes/no, so we run this first so it doesn't get overwritten by the 2 level recode
+full.numeric$GENDER <- as.character(full.numeric$GENDER)
+
+full.numeric$GENDER <- recode(full.numeric$GENDER,
+                              0 <- "(1) Male",
+                              1 <- c("(2) Female"),
+                              otherwise = "copy")
+
+full.numeric$GENDER <- as.numeric(full.numeric$GENDER)
+
+#Convert 1 = Yes 2 = No w/ no missing
+for (i in 2:ncol(full.numeric)) {
+  if (is.factor(full.numeric[,i]) == T & length(levels(full.numeric[,i])) == 2) {
+    
+    full.numeric[,i] <- as.character(full.numeric[,i])
+    
+    full.numeric[,i] <- recode(full.numeric[,i],
+                               1 <- "(1) Yes",
+                               0 <- c("(2) No"),
+                               otherwise = NA)
+    
+    full.numeric[,i] <- as.numeric(as.character(full.numeric[,i]))
+    
+  }
+}
+
+# Create Race Dummies
+
+full.numeric$hispanic <- NA
+full.numeric$hispanic <- ifelse(full.numeric$RACE == "(0000003) Hispanic", full.numeric$hispanic <- 1,
+                                ifelse(full.numeric$RACE == "(9999999) Missing", full.numeric$hispanic <- NA, 0))
+
+full.numeric$black.nh <- NA
+full.numeric$black.nh <- ifelse(full.numeric$RACE == "(0000002) Black non-hispanic", full.numeric$black.nh <- 1,
+                                ifelse(full.numeric$RACE == "(9999999) Missing", full.numeric$black.nh <- NA, 0))
+
+full.numeric$asian <- NA
+full.numeric$asian <- ifelse(full.numeric$RACE == "(0000005) Asian, pacific islander, native hawaiian non-hispanic", 
+                             full.numeric$asian <- 1,
+                             ifelse(full.numeric$RACE == "(9999999) Missing", full.numeric$asian <- NA, 0))
+
+
+## Recode CS_SENTENCEMTH (Length of Sentence in Month)
+
+full.numeric$CS_SENTENCEMTH[full.numeric$CS_SENTENCEMTH > 10000] <- NA ## convert all Missings
+
+full.numeric$CS_SENTENCEMTH <- as.numeric(full.numeric$CS_SENTENCEMTH) ## NB: Length of 10,000 == Life or Death Sentence
+
+full.numeric$LIFE_SENTENCE <- ifelse(full.numeric$CS_SENTENCEMTH == 10000, 1, 0) ## Creates variable for life sentence
+
+full.numeric$CS_SENTENCEMTH[full.numeric$CS_SENTENCEMTH == 10000] <- NA ## Converts life sentence in months to NA
+
+##Recode SES_PARENTS_INCARCERATED, SES_HASCHILDREN, SES_FAMILY_INCARCERATED, DRUG_TRT, SES_INCOMEILLEGALMTH, SES_INCOMEWELFAREMTH
+
+vars <- c("SES_PARENTS_INCARCERATED", "SES_HASCHILDREN", "SES_FAMILY_INCARCERATED", "DRUG_TRT", "SES_INCOMEILLEGALMTH", "SES_INCOMEWELFAREMTH")
+
+# Removes punctuation, spaces, and alphabetic expressions
+
+for (i in vars) {
+  levels(full.numeric[,i]) <- gsub("[[:punct:]]", "", levels(full.numeric[,i]))
+  levels(full.numeric[,i]) <- gsub("[[:space:]]", "", levels(full.numeric[,i]))
+  levels(full.numeric[,i]) <- gsub("[[:alpha:]]", "", levels(full.numeric[,i]))
+  # now the factor label should be numeric only
+}
+
+# Converts into a character vector and recodes
+
+for (i in vars) {
+  full.numeric[,i] <- as.character(full.numeric[,i])
+  
+  full.numeric[,i] <- recode(full.numeric[,i],
+                             1 <- "0000001",
+                             0 <- c("0000002"),
+                             otherwise = NA)
+  full.numeric[,i] <- as.numeric(as.character(full.numeric[,i]))
+}
+
+
+## Removing Missing + non-US education categories from Education 
+levels(full.numeric$EDUCATION) <- gsub("[[:punct:]]", "", levels(full.numeric$EDUCATION))
+levels(full.numeric$EDUCATION) <- gsub("[[:space:]]", "", levels(full.numeric$EDUCATION))
+levels(full.numeric$EDUCATION) <- gsub("[[:alpha:]]", "", levels(full.numeric$EDUCATION))
+
+full.numeric$EDUCATION <- as.character(full.numeric$EDUCATION)
+
+full.numeric$EDUCATION <- recode(full.numeric$EDUCATION,
+                                 NA <- c("0000019","9999997","9999998","9999999"),
+                                 otherwise = "copy")
+
+full.numeric$EDUCATION <- as.factor(full.numeric$EDUCATION)
+
+## Removing Missing Values from SES_INCOMEMTH
+full.numeric$SES_INCOMEMTH <- as.character(full.numeric$SES_INCOMEMTH)
+
+full.numeric$SES_INCOMEMTH <- recode(full.numeric$SES_INCOMEMTH,
+                                     NA <- c("(9999997) Don't know","(9999998) Refused","(9999999) Missing"),
+                                     otherwise = "copy")
+
+full.numeric$SES_INCOMEMTH <- as.factor(full.numeric$SES_INCOMEMTH)
+
+##Removing missing from Type of Offense
+full.numeric$TYPEOFFENSE <- as.character(full.numeric$TYPEOFFENSE)
+
+full.numeric$TYPEOFFENSE <- recode(full.numeric$TYPEOFFENSE,
+                                   NA <- c("(9999997) DK/refused","(9999998) Missing", "(9999999) Blank"),
+                                   otherwise = "copy")
+
+full.numeric$TYPEOFFENSE <- as.factor(full.numeric$TYPEOFFENSE)
+
+#Removing missing from Prior Arrests and Prior Incarcerations
+var <- c("CH_PRIORARREST_CAT", "CH_NUMCAR")
+
+for (i in var) {
+  full.numeric[,i] <- recode(full.numeric[,i],
+                             NA <- c(9999997, 9999998, 9999999),
+                             otherwise ="copy")
+}
+
+#Creating dataframe of just potential model varaibles and then dropping NAs
+model.var <- c("CH_CRIMHIST_COLLAPSED", "OFFENSE_VIOLENT", "OFFENSE_DRUG","OFFENSE_PROPERTY","SES_PHYSABUSED_EVER","CS_SENTENCEMTH", 
+                 "SES_PARENTS_INCARCERATED", "SES_FAMILY_INCARCERATED", "SES_HASCHILDREN", "AGE_CAT", 
+                 "SES_SEXABUSED_EVER", "DRUG_ANYREG", "DRUG_ANYTME", "black.nh", "hispanic", "asian", "state", "EDUCATION","SES_FATHER_INCARCERATED",
+               "DRUG_COCRKTME", "DRUG_HROPTME", "DRUG_METHATME", "GENDER", "TYPEOFFENSE", "DRUG_MARIJTME",
+               "CH_PRIORARREST_CAT", "SES_LIVE_CHILD_ARREST", "DRUG_ABUSE_ONLY", "DRUG_TRT")
+
+model.data <- full.numeric[model.var]
+
+model.data <- model.data[complete.cases(model.data),]
+
+```
+
+## Descriptive Statistics
+```{r echo = FALSE, warning = FALSE, message = FALSE}
+#install.packages("stargazer") #Uncomment if need to install stargazer
+library(stargazer)
+stargazer(model.data, type = "text", title="Descriptive statistics", digits=2, header = FALSE)
+
+```
+
+```{r echo = FALSE, warning = FALSE}
+factorvar <- data.frame(model.data$EDUCATION, model.data$AGE_CAT, model.data$TYPEOFFENSE)
+summary(factorvar)
+```
+
+Our descriptive statistics show that 38 percent of our sample is black, about 19 percent is hispanic, and about 1% is asian. The remaining 42 percent is categorized as white or other race. Roughly 22 percent of our sample is female.  The average sentence for inmates is 132 months or 11 years, and roughly 80% of those inmates reside in state prisons.The average number of prior arrests for prisoners in our sample is 5. The most common crime committed is drug trafficking, followed by robbery, drug possession, and assault. Prisoners are most commonly highschool educated to some degree.
+
+
+About 19 percent of our sample reported ever being physically abused, and 12 percent reported ever being sexually abused. About 17.5 percent of prisoners have at least one parent who has been incarcerated (this is equivalent to the father incarcerated variable suggesting this is commonly the father who is incarcerated and not the mother), and 38 percent have family members who have been incarcerated. Drug use is common among prisoners, with 73 percent having regularly used any drug, and 34 percent of prisoners using drugs at the time of arrest. The most common drug used at the time of arrest was marijuana, followed by crack coccaine, meth, and heroin. 61.5 percent of our sample has been in a drug treatment program at least once, with 17 percent classifying themselves as a drug abuser. 
+
+# Results
+Our results align with the hypothesis and the previous research that African-American drug offender inmates receive lengthier and more frequently more indeterminate sentence types compared to the similarily situated white drug offenders.
+
+
+# Future Research
+This study can be expanded to compare the results between years and States to give us a clearer idea about how the general direction towards racial disparity has moved since 1970s to this date.
+
+# References
+
+[1] Alexander ML (2010) The new jim crow: mass incarceration in the age of colorblindness. New Press, New
+
+York
+
+[2] Blumstein A (1993) Racial disproportionality of US prison populations revisited. Univ Colo Law Rev
+
+64(3):743-760
+
+[3] Davis A. Estes (2015) Race &amp; Non-Racial Characteristics in Sentencing Length and Sentencing Type Disparity
+
+[4] United States Department of Justice. (2007). Bureau of Justice Statistics. Survey of Inmates in State and Federal Correctional Facilities, 2004. Ann Arbor, MI: Inter-university Consortium for Political and Social Research. Retrieved from [http://doi.org/10.3886/ICPSR04572.v1](http://doi.org/10.3886/ICPSR04572.v1)
+
+[5] U.S. Dept. of Justice, Bureau of Justice, Statistics, and U.S. Dept. of Justice, Federal,
+
+Bureau of Prisons. SURVEY OF INMATES IN STATE AND FEDERAL CORRECTIONAL FACILITIES, 1997
+
+[Computer file]. Compiled by U.S. Dept. of Commerce, Bureau of the Census. ICPSR ed. Ann Arbor,
+
+MI: Inter-university Consortium for Political and Social Research [producer and distributor], 2000.
+
+[6] Statistics Solutions. (2016). Data analysis plan: Binary Logistic Regression [WWW Document]. Retrieved from http://www.statisticssolutions.com/membership-resources/member-profile/data-analysis-plan-templates/binary-logistic-regression/
